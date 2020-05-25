@@ -7,7 +7,9 @@ public class graph {
     private final int[][] adjacencyMatrix;
     private final boolean[] visit;
     public ArrayList<String> forwardPaths;
+    public ArrayList<Integer> forwardPathsGains;
     public ArrayList<String> loops;
+    public ArrayList<Integer> loopsGains;
     public ArrayList<String> nonTouchingLoops = new ArrayList<>();
     private boolean[][] nonTouchingLoopsArray;
 
@@ -65,9 +67,12 @@ public class graph {
         }
         forwardPaths = y;
         System.out.println("Forward Paths");
+        int i = 1;
         for (String s : forwardPaths) {
+            System.out.print(i++ + ") ");
             System.out.println(s);
         }
+        forwardPathsGains = getGains(forwardPaths);
     }
 
     public void loops() {
@@ -82,9 +87,12 @@ public class graph {
             y.add(i, temp);
         }
         System.out.println("Loops");
+        int i = 1;
         for (String s : loops) {
+            System.out.print(i++ + ") ");
             System.out.println(s);
         }
+        loopsGains = getGains(loops);
     }
 
     private void nonTouchingLoopsArray() {
@@ -96,7 +104,7 @@ public class graph {
         }
         for (int i = 0; i < nonTouchingLoopsArray.length; i++) {
             for (int j = i + 1; j < nonTouchingLoopsArray.length; j++) {
-                nonTouchingLoopsArray[i][j] = isTouching(loops.get(i), loops.get(j));
+                nonTouchingLoopsArray[i][j] = isNonTouching(loops.get(i), loops.get(j));
                 nonTouchingLoopsArray[j][i] = nonTouchingLoopsArray[i][j];
             }
         }
@@ -118,7 +126,9 @@ public class graph {
         }
         handleRepetitions(nonTouchingLoops);
         System.out.println("Non Touching Loops");
+        int i = 1;
         for (String s : nonTouchingLoops) {
+            System.out.print(i++ + ") ");
             System.out.println(s);
         }
     }
@@ -145,7 +155,9 @@ public class graph {
         return true;
     }
 
-    private boolean isTouching(String A, String B) {
+    protected boolean isNonTouching(String A, String B) {
+        if (A.length() == 0 || B.length() == 0)
+            return true;
         String[] a = A.split(",");
         String[] b = B.split(",");
         Arrays.sort(a);
@@ -198,5 +210,18 @@ public class graph {
             }
         }
         return y;
+    }
+
+    private ArrayList<Integer> getGains(ArrayList<String> paths) {
+        ArrayList<Integer> result = new ArrayList<>();
+        for (String s : paths) {
+            int temp = 1;
+            String[] array = s.split(",");
+            for (int i = 1; i < array.length; i++) {
+                temp *= adjacencyMatrix[Integer.parseInt(array[i - 1]) - 1][Integer.parseInt(array[i]) - 1];
+            }
+            result.add(temp);
+        }
+        return result;
     }
 }
