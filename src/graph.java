@@ -4,11 +4,12 @@ import java.util.Scanner;
 
 public class graph {
 
-    public int[][] adjacencyMatrix;
+    private final int[][] adjacencyMatrix;
     private final boolean[] visit;
     public ArrayList<String> forwardPaths;
     public ArrayList<String> loops;
     public ArrayList<String> nonTouchingLoops = new ArrayList<>();
+    private boolean[][] nonTouchingLoopsArray;
 
     public graph() {
         adjacencyMatrix = takeInput();
@@ -16,9 +17,6 @@ public class graph {
         for (int i = 0; i < adjacencyMatrix.length; i++) {
             visit[i] = false;
         }
-        forwardPaths();
-        loops();
-        nonTouchingLoopsArray();
     }
 
     private int[][] takeInput() {
@@ -66,6 +64,10 @@ public class graph {
             y.add(i, temp);
         }
         forwardPaths = y;
+        System.out.println("Forward Paths");
+        for (String s : forwardPaths) {
+            System.out.println(s);
+        }
     }
 
     public void loops() {
@@ -73,6 +75,94 @@ public class graph {
         for (int i = 0; i < adjacencyMatrix.length; i++) {
             paths(adjacencyMatrix, visit, i, i, "", y);
         }
+        loops = handleRepetitions(y);
+        for (int i = 0; i < y.size(); i++) {
+            String temp = y.remove(i);
+            temp += temp.split(",")[0];
+            y.add(i, temp);
+        }
+        System.out.println("Loops");
+        for (String s : loops) {
+            System.out.println(s);
+        }
+    }
+
+    private void nonTouchingLoopsArray() {
+        nonTouchingLoopsArray = new boolean[loops.size()][loops.size()];
+        for (int i = 0; i < loops.size(); i++) {
+            for (int j = 0; j < loops.size(); j++) {
+                nonTouchingLoopsArray[i][j] = false;
+            }
+        }
+        for (int i = 0; i < nonTouchingLoopsArray.length; i++) {
+            for (int j = i + 1; j < nonTouchingLoopsArray.length; j++) {
+                nonTouchingLoopsArray[i][j] = isTouching(loops.get(i), loops.get(j));
+                nonTouchingLoopsArray[j][i] = nonTouchingLoopsArray[i][j];
+            }
+        }
+    }
+
+    public void nonTouchingLoops() {
+        nonTouchingLoopsArray();
+        for (int i = 0; i < nonTouchingLoopsArray.length; i++) {
+            for (int j = i + 1; j < nonTouchingLoopsArray.length; j++) {
+                if (nonTouchingLoopsArray[i][j]) {
+                    boolean[] visited = new boolean[nonTouchingLoopsArray.length];
+                    for (int k = 0; k < nonTouchingLoopsArray.length; k++) {
+                        visited[k] = false;
+                    }
+                    visited[i] = true;
+                    getNonTouchingLoops(j, visited, String.valueOf(i + 1));
+                }
+            }
+        }
+        handleRepetitions(nonTouchingLoops);
+        System.out.println("Non Touching Loops");
+        for (String s : nonTouchingLoops) {
+            System.out.println(s);
+        }
+    }
+
+    private void getNonTouchingLoops(int loop, boolean[] visited, String recentNonTouchingLoops) {
+        boolean[] newVisited = Arrays.copyOf(visited, visited.length);
+        recentNonTouchingLoops += ("," + (loop + 1));
+        nonTouchingLoops.add(recentNonTouchingLoops);
+        newVisited[loop] = true;
+        for (int i = 0; i < newVisited.length; i++) {
+            if (nonTouchingLoopsArray[loop][i] && !newVisited[i] && isOkToAllPreviousLoops(recentNonTouchingLoops, i)) {
+                getNonTouchingLoops(i, newVisited, recentNonTouchingLoops);
+            }
+        }
+    }
+
+    private boolean isOkToAllPreviousLoops(String recentNonTouchingLoops, int loop) {
+        String[] previousLoops = recentNonTouchingLoops.split(",");
+        for (String previousLoop : previousLoops) {
+            if (!nonTouchingLoopsArray[Integer.parseInt(previousLoop) - 1][loop]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isTouching(String A, String B) {
+        String[] a = A.split(",");
+        String[] b = B.split(",");
+        Arrays.sort(a);
+        Arrays.sort(b);
+        for (int i = 0, j = 0; i < a.length && j < b.length; ) {
+            if (Integer.parseInt(a[i]) == Integer.parseInt(b[j])) {
+                return false;
+            } else if (Integer.parseInt(a[i]) < Integer.parseInt(b[j])) {
+                i++;
+            } else {
+                j++;
+            }
+        }
+        return true;
+    }
+
+    private ArrayList<String> handleRepetitions(ArrayList<String> y) {
         ArrayList<String[]> z = new ArrayList<>();
         for (String s : y) {
             String[] temp = s.split(",");
@@ -107,48 +197,6 @@ public class graph {
                 y.remove(i);
             }
         }
-        for (int i = 0; i < y.size(); i++) {
-            String temp = y.remove(i);
-            temp += temp.split(",")[0];
-            y.add(i, temp);
-        }
-        loops = y;
-    }
-
-    private void nonTouchingLoopsArray() {
-        boolean[][] array = new boolean[loops.size()][loops.size()];
-        for (int i = 0; i < loops.size(); i++) {
-            for (int j = 0; j < loops.size(); j++) {
-                array[i][j] = false;
-            }
-        }
-        for (int i = 0; i < array.length; i++) {
-            for (int j = i + 1; j < array.length; j++) {
-                array[i][j] = isTouching(loops.get(i), loops.get(j));
-                array[j][i] = array[i][j];
-                if (array[i][j]){
-                    String x = "";
-                    x += (i + 1) + "," + (j + 1);
-                    nonTouchingLoops.add(x);
-                }
-            }
-        }
-    }
-
-    private boolean isTouching(String A, String B) {
-        String[] a = A.split(",");
-        String[] b = B.split(",");
-        Arrays.sort(a);
-        Arrays.sort(b);
-        for (int i = 0, j = 0; i < a.length && j < b.length; ) {
-            if (Integer.parseInt(a[i]) == Integer.parseInt(b[j])) {
-                return false;
-            } else if (Integer.parseInt(a[i]) < Integer.parseInt(b[j])) {
-                i++;
-            } else {
-                j++;
-            }
-        }
-        return true;
+        return y;
     }
 }
