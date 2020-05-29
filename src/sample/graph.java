@@ -1,10 +1,12 @@
+package sample;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
 public class graph {
 
-    private final int[][] adjacencyMatrix;
+    public final int[][] adjacencyMatrix;
     private final boolean[] visit;
     public ArrayList<String> forwardPaths;
     public ArrayList<Integer> forwardPathsGains;

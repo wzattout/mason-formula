@@ -1,3 +1,5 @@
+package sample;
+
 public class masonFormula {
 
     private int setDelta(graph graph, String x) {
