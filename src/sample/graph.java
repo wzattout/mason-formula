@@ -9,9 +9,9 @@ public class graph {
     public final int[][] adjacencyMatrix;
     private final boolean[] visit;
     public ArrayList<String> forwardPaths;
-    public ArrayList<Integer> forwardPathsGains;
+    public ArrayList<Double> forwardPathsGains;
     public ArrayList<String> loops;
-    public ArrayList<Integer> loopsGains;
+    public ArrayList<Double> loopsGains;
     public ArrayList<String> nonTouchingLoops = new ArrayList<>();
     private boolean[][] nonTouchingLoopsArray;
 
@@ -174,14 +174,22 @@ public class graph {
     protected boolean isNonTouching(String A, String B) {
         if (A.length() == 0 || B.length() == 0)
             return true;
-        String[] a = A.split(",");
-        String[] b = B.split(",");
+        String[] a1 = A.split(",");
+        String[] b1 = B.split(",");
+        int[] a = new int[a1.length];
+        int[] b = new int[b1.length];
+        for (int i = 0; i < a.length; i++){
+            a[i] = Integer.parseInt(a1[i]);
+        }
+        for (int i = 0; i < b.length; i++){
+            b[i] = Integer.parseInt(b1[i]);
+        }
         Arrays.sort(a);
         Arrays.sort(b);
         for (int i = 0, j = 0; i < a.length && j < b.length; ) {
-            if (Integer.parseInt(a[i]) == Integer.parseInt(b[j])) {
+            if (a[i] == b[j]) {
                 return false;
-            } else if (Integer.parseInt(a[i]) < Integer.parseInt(b[j])) {
+            } else if (a[i] < b[j]) {
                 i++;
             } else {
                 j++;
@@ -228,10 +236,10 @@ public class graph {
         return y;
     }
 
-    private ArrayList<Integer> getGains(ArrayList<String> paths) {
-        ArrayList<Integer> result = new ArrayList<>();
+    private ArrayList<Double> getGains(ArrayList<String> paths) {
+        ArrayList<Double> result = new ArrayList<>();
         for (String s : paths) {
-            int temp = 1;
+            double temp = 1.0;
             String[] array = s.split(",");
             for (int i = 1; i < array.length; i++) {
                 temp *= adjacencyMatrix[Integer.parseInt(array[i - 1]) - 1][Integer.parseInt(array[i]) - 1];

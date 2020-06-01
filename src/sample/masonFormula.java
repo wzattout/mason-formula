@@ -46,13 +46,13 @@ public class masonFormula {
     }
 
     public void getTransferFunction(graph graph) {
-        int delta = setDelta(graph, "");
+        double delta = setDelta(graph, "");
         int[] deltas = setDeltas(graph);
-        int sigma = 0;
+        double sigma = 0;
         for (int i = 0; i < deltas.length; i++) {
             sigma += (deltas[i] * graph.forwardPathsGains.get(i));
         }
         System.out.print("Transfer function = ");
-        System.out.println(sigma / (double) delta);
+        System.out.println(sigma / delta);
     }
 }
