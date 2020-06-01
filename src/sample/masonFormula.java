@@ -18,7 +18,7 @@ public class masonFormula {
                 temp = 1;
                 if (target.length == order) {
                     for (String loop : target) {
-                        if (graph.isNonTouching(x, loop)) {
+                        if (graph.isNonTouching(x, graph.loops.get(Integer.parseInt(loop) - 1))) {
                             temp *= graph.loopsGains.get(Integer.parseInt(loop) - 1);
                             add = true;
                         } else {
