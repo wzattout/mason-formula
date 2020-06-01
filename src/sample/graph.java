@@ -26,7 +26,10 @@ public class graph {
     private int[][] takeInput() {
         int vertices, edges;
         Scanner input = new Scanner(System.in);
+        System.out.println("Enter the number of vertices:");
         vertices = input.nextInt();
+        System.out.println("Vertex '1' is the source and Vertex '" + vertices + "' is the destination");
+        System.out.println("Enter the number of edges:");
         edges = input.nextInt();
         int[][] adjacencyMatrix = new int[vertices][vertices];
         for (int i = 0; i < vertices; i++) {
@@ -35,6 +38,8 @@ public class graph {
             }
         }
         int firstVertex, secondVertex, vertexWeight;
+        System.out.println("Enter the number of edges details (vertex1 vertex2 weight):");
+        System.out.println("All details must be integers");
         for (int i = 0; i < edges; i++) {
             firstVertex = input.nextInt();
             secondVertex = input.nextInt();
@@ -68,8 +73,11 @@ public class graph {
             y.add(i, temp);
         }
         forwardPaths = y;
-        System.out.println("Forward Paths");
+        System.out.println("Forward Paths:");
         int i = 1;
+        if (forwardPaths.size() == 0){
+            System.out.println("No Forward Paths");
+        }
         for (String s : forwardPaths) {
             System.out.print(i++ + ") ");
             System.out.println(s);
@@ -88,7 +96,10 @@ public class graph {
             temp += temp.split(",")[0];
             y.add(i, temp);
         }
-        System.out.println("Loops");
+        System.out.println("Loops:");
+        if (loops.size() == 0){
+            System.out.println("No Loops");
+        }
         int i = 1;
         for (String s : loops) {
             System.out.print(i++ + ") ");
@@ -127,7 +138,10 @@ public class graph {
             }
         }
         handleRepetitions(nonTouchingLoops);
-        System.out.println("Non Touching Loops");
+        System.out.println("Non Touching Loops:");
+        if (nonTouchingLoops.size() == 0){
+            System.out.println("No Non Touching Loops");
+        }
         int i = 1;
         for (String s : nonTouchingLoops) {
             System.out.print(i++ + ") ");

@@ -25,7 +25,7 @@ public class draw extends Application {
         for (int i = 0; i < graph.adjacencyMatrix.length; i++){
             for (int j = 0; j < graph.adjacencyMatrix.length; j++){
                 if (graph.adjacencyMatrix[i][j] != (int) Double.POSITIVE_INFINITY){
-                    g.insertEdge(String.valueOf(i + 1), String.valueOf(j + 1), String.valueOf(graph.adjacencyMatrix[i][j]) + space);
+                    g.insertEdge(String.valueOf(i + 1), String.valueOf(j + 1), space + String.valueOf(graph.adjacencyMatrix[i][j]) + space);
                     space.append(" ");
                 }
             }
